@@ -1,21 +1,20 @@
 import React from "react";
+
 import { Controller } from "react-hook-form";
 
-interface FormInputProps {
+interface FormSelectProps {
   label: string;
   name: string;
-  type: string;
-  placeholder: string;
+  options: string[];
   control: any;
   rules?: Record<string, any>;
   errors: any;
 }
 
-const FormInput: React.FC<FormInputProps> = ({
+const FormSelect: React.FC<FormSelectProps> = ({
   label,
   name,
-  type,
-  placeholder,
+  options,
   control,
   rules,
   errors,
@@ -32,13 +31,18 @@ const FormInput: React.FC<FormInputProps> = ({
         defaultValue=""
         render={({ field }) => (
           <div>
-            <input
+            <select
               {...field}
-              type={type}
-              placeholder={placeholder}
               id={name}
               className="mt-2 p-2 border border-gray-300 rounded w-full focus:outline-none focus:border-indigo-500 bg-black text-white"
-            />
+            >
+              <option value="">Select</option>
+              {options.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
             {errors[name] && (
               <p className="text-red-500 text-xs mt-1">
                 {errors[name].message}
@@ -51,4 +55,4 @@ const FormInput: React.FC<FormInputProps> = ({
   );
 };
 
-export default FormInput;
+export default FormSelect;

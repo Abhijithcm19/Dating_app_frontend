@@ -1,0 +1,13 @@
+.nav-bar-container {
+  background-color: transparent;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the alpha value as needed */
+  z-index: -1; /* Ensure the modal overlay is behind the modal content */
+}

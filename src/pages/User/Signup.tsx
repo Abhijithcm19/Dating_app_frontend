@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import FormInput from "../../components/User/form/FormInput";
 import Button from "../../components/User/ui/Button";
+import { Link } from "react-router-dom";
 
 interface SignUpFormData {
   username: string;
@@ -9,7 +10,11 @@ interface SignUpFormData {
   password: string;
 }
 
-const SignUp: React.FC = () => {
+interface SignUpProps {
+  onCloseModal: () => void;
+}
+
+const SignUp: React.FC<SignUpProps> = ({ onCloseModal }) => {
   const {
     handleSubmit,
     control,
@@ -28,59 +33,66 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-screen flex items-center justify-center bg-gray-100 overflow-hidden">
-      <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
-        <h2 className="text-3xl font-bold text-indigo-700 mb-6 text-center">
-          Sign Up
-        </h2>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <FormInput
-            label="Username"
-            name="username"
-            type="text"
-            placeholder="Username"
-            control={control}
-            rules={{ required: "Username is required" }}
-            errors={errors}
-          />
-          <FormInput
-            label="Email"
-            name="email"
-            type="email"
-            placeholder="name@company.com"
-            control={control}
-            rules={{ required: "Email is required" }}
-            errors={errors}
-          />
-          <FormInput
-            label="Password"
-            name="password"
-            type="password"
-            placeholder="Password"
-            control={control}
-            rules={{
-              validate: validatePassword,
-              required: "Password is required",
-            }}
-            errors={errors}
-          />
-          <Button
-            label="Sign Up"
-            onClick={handleSubmit(onSubmit)}
-            className="mt-4"
-          />
-          <div className="text-sm text-center">
-            <span>Already have an account? </span>
-            <span className="text-indigo-500">Sign In</span>
-          </div>
-        </form>
-        <div className="mt-4">
-          <div className="my-4 border-b border-gray-300 mx-6"></div>
-          <div className="flex justify-center mt-2">
-            <button className="bg-red-600 text-white px-4 py-2 rounded mr-4 hover:bg-red-700 transition duration-300">
-              <i className="fab fa-google mr-2"></i> Login With Google
-            </button>
-          </div>
+    <div className="bg-neutral-900 p-8 rounded-lg shadow-md max-w-md w-full relative">
+      {" "}
+      <button
+        className="absolute top-2 right-2 text-gray-400"
+        onClick={onCloseModal}
+      >
+        <i className="fas fa-times"></i>
+      </button>
+      <h2 className="text-3xl font-bold text-gray-100 mb-6 text-center">
+        Sign Up
+      </h2>
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <FormInput
+          label="Username"
+          name="username"
+          type="text"
+          placeholder="Username"
+          control={control}
+          rules={{ required: "Username is required" }}
+          errors={errors}
+        />
+        <FormInput
+          label="Email"
+          name="email"
+          type="email"
+          placeholder="name@company.com"
+          control={control}
+          rules={{ required: "Email is required" }}
+          errors={errors}
+        />
+        <FormInput
+          label="Password"
+          name="password"
+          type="password"
+          placeholder="Password"
+          control={control}
+          rules={{
+            validate: validatePassword,
+            required: "Password is required",
+          }}
+          errors={errors}
+        />
+        <Button
+          label="Sign Up"
+          onClick={handleSubmit(onSubmit)}
+          className="mt-4"
+        />
+        <div className="text-sm text-center text-gray-400">
+          <span>Already have an account? </span>
+          <Link to="/login" className="text-indigo-500">
+            Login
+          </Link>{" "}
+        </div>
+      </form>
+      <div className="mt-4">
+        <div className="my-4 border-b border-gray-300 mx-6"></div>
+        <div className="flex justify-center mt-2">
+          <button className="bg-red-600 text-white px-4 py-2 rounded mr-4 hover:bg-red-700 transition duration-300">
+            <i className="fab fa-google mr-2"></i> Login With Google
+          </button>
         </div>
       </div>
     </div>
