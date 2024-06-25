@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import FormInput from "../../components/User/form/FormInput";
 import Button from "../../components/User/ui/Button";
 import { Link } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { signUp } from "../../services/UserApi";
+import { validatePassword } from "../../utils/auth";
+import { useNavigate } from "react-router-dom";
+import OAuth from "../../components/User/OAuth";
 
 interface SignUpFormData {
   username: string;
@@ -15,26 +21,33 @@ interface SignUpProps {
 }
 
 const SignUp: React.FC<SignUpProps> = ({ onCloseModal }) => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm<SignUpFormData>();
 
-  const onSubmit = (data: SignUpFormData) => {
-    console.log(data);
-  };
+  const onSubmit = async (data: SignUpFormData) => {
+    setLoading(true);
+    try {
+      const response = await signUp(data);
+      toast.success("Sign Up successful!");
 
-  const validatePassword = (value: string) => {
-    if (value.length < 8) {
-      return "Password must be at least 8 characters long";
+      setTimeout(() => {
+        setLoading(false);
+        onCloseModal();
+        navigate("/personal-details");
+      }, 2000);
+    } catch (error) {
+      toast.error(error.message || "Sign Up failed!");
+      setLoading(false);
     }
-    return true;
   };
-
   return (
     <div className="bg-neutral-900 p-8 rounded-lg shadow-md max-w-md w-full relative">
-      {" "}
+      <ToastContainer />{" "}
       <button
         className="absolute top-2 right-2 text-gray-400"
         onClick={onCloseModal}
@@ -89,11 +102,7 @@ const SignUp: React.FC<SignUpProps> = ({ onCloseModal }) => {
       </form>
       <div className="mt-4">
         <div className="my-4 border-b border-gray-300 mx-6"></div>
-        <div className="flex justify-center mt-2">
-          <button className="bg-red-600 text-white px-4 py-2 rounded mr-4 hover:bg-red-700 transition duration-300">
-            <i className="fab fa-google mr-2"></i> Login With Google
-          </button>
-        </div>
+        <OAuth />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Message from "./Message";
 import Like from "./Like";
+import { app } from "../firebase";
 
 const SidePanel = () => {
   const [liked, setLiked] = useState(false);
@@ -20,6 +21,7 @@ const SidePanel = () => {
       "https://st3.depositphotos.com/15648834/17930/v/450/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg",
   };
 
+  const handleGoogleClick = async () => {};
   const messagesData = [
     {
       id: 1,

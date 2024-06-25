@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import ChatPopup from "./ChatPopup";
 
 const Message = () => {
   const messageData = [
@@ -25,26 +26,44 @@ const Message = () => {
     },
   ];
 
+  const [openChat, setOpenChat] = useState(null);
+
+  const openChatPopup = (user) => {
+    setOpenChat(user);
+  };
+
+  const closeChatPopup = () => {
+    setOpenChat(null);
+  };
+
   return (
-    <div className="flex flex-col mx-4">
-      {messageData.map((user) => (
-        <div key={user.id} className="flex items-center mt-4">
-          <img
-            src={user.profilePicture}
-            alt={user.name}
-            className="w-10 h-10 rounded-full mr-4"
-          />
-          <div>
-            <p className="text-slate-50 text-lg font-semibold">{user.name}</p>
-            <div className="flex items-center mt-1">
-              <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-white text-xs mr-1">
-                {user.messageCount}
+    <div>
+      <div className="flex flex-col mx-4">
+        {messageData.map((user) => (
+          <div
+            key={user.id}
+            className="flex items-center mt-4 message-user hover:bg-gray-700 cursor-pointer"
+            onClick={() => openChatPopup(user)}
+          >
+            <img
+              src={user.profilePicture}
+              alt={user.name}
+              className="w-10 h-10 rounded-full mr-4"
+            />
+            <div>
+              <p className="text-slate-50 text-lg font-semibold">{user.name}</p>
+              <div className="flex items-center mt-1">
+                <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-white text-xs mr-1">
+                  {user.messageCount}
+                </div>
+                <p className="text-gray-500">New messages</p>
               </div>
-              <p className="text-gray-500">New messages</p>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+        {/* Render chat popup if openChat is not null */}
+      </div>
+      {openChat && <ChatPopup user={openChat} onClose={closeChatPopup} />}
     </div>
   );
 };

@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import FormInput from "../../components/User/form/FormInput";
 import Button from "../../components/User/ui/Button";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { login } from "../../services/UserApi";
+import { validatePassword } from "../../utils/auth";
+import {
+  signInStart,
+  signoutSuccess,
+  signInFailure,
+} from "../../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 interface LoginFormData {
   email: string;
   password: string;
@@ -14,21 +23,30 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onCloseModalAndNavigate }) => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm<LoginFormData>();
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log(data);
-  };
+  const onSubmit = async (data: LoginFormData) => {
+    setLoading(true);
+    try {
+      const response = await login(data);
+      toast.success("Login successful!");
 
-  const validatePassword = (value: string) => {
-    if (value.length < 8) {
-      return "Password must be at least 8 characters long";
+      setTimeout(() => {
+        setLoading(false);
+        onCloseModalAndNavigate();
+        navigate("/match");
+      }, 1000);
+    } catch (error) {
+      toast.error(error.message || "Login failed!");
+      setLoading(false);
     }
-    return true;
   };
 
   return (
@@ -36,6 +54,7 @@ const Login: React.FC<LoginProps> = ({ onCloseModalAndNavigate }) => {
       className="bg-neutral-900 p-8 rounded-lg shadow-md max-w-md w-full"
       style={{ width: "1536px" }}
     >
+      <ToastContainer />
       <h2 className="text-3xl font-bold text-gray-100 mb-6 text-center">
         Login
       </h2>
@@ -62,9 +81,10 @@ const Login: React.FC<LoginProps> = ({ onCloseModalAndNavigate }) => {
           errors={errors}
         />
         <Button
-          label="Login"
+          label={loading ? "Loading..." : "Login"}
           onClick={handleSubmit(onSubmit)}
           className="mt-4"
+          disabled={loading}
         />
         <div className="text-sm text-center text-gray-400">
           <span>Don't have an account? </span>
@@ -74,13 +94,16 @@ const Login: React.FC<LoginProps> = ({ onCloseModalAndNavigate }) => {
             onClick={onCloseModalAndNavigate}
           >
             Sign Up
-          </Link>{" "}
+          </Link>
         </div>
       </form>
       <div className="mt-4">
         <div className="my-4 border-b border-gray-300 mx-6"></div>
         <div className="flex justify-center mt-2">
-          <button className="bg-red-600 text-white px-4 py-2 rounded mr-4 hover:bg-red-700 transition duration-300">
+          <button
+            className="bg-red-600 text-white px-4 py-2 rounded mr-4 hover:bg-red-700 transition duration-300"
+            disabled={loading}
+          >
             <i className="fab fa-google mr-2"></i> Login With Google
           </button>
         </div>

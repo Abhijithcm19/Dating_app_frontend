@@ -1,16 +1,27 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import FormSelect from "../../components/User/form/FormSelect";
 import FormInput from "../../components/User/form/FormInput";
 import ImageUploadCard from "../../components/User/form/ImageUploadCard";
 
-const PersonalDetails = () => {
+interface FormData {
+  firstName: string;
+  email: string;
+  birthday: string;
+  gender: string;
+  interestedIn: string;
+  lookingFor: string;
+  sexualOrientation: string;
+  hobbies: string;
+}
+
+const PersonalDetails: React.FC = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => console.log(data);
+  } = useForm<FormData>();
+  const onSubmit: SubmitHandler<FormData> = (data) => console.log(data);
 
   const sexualOrientations = [
     "Heterosexual",
@@ -27,15 +38,20 @@ const PersonalDetails = () => {
     "Gaming",
   ];
 
-  const [photos, setPhotos] = useState(Array.from({ length: 6 }, () => null));
+  const [photos, setPhotos] = useState<(string | null)[]>(
+    Array.from({ length: 6 }, () => null)
+  );
 
-  const handlePhotoUpload = (event, index) => {
-    const file = event.target.files[0];
+  const handlePhotoUpload = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const file = event.target.files?.[0];
     const reader = new FileReader();
 
     reader.onloadend = () => {
       const updatedPhotos = [...photos];
-      updatedPhotos[index] = reader.result;
+      updatedPhotos[index] = reader.result as string;
       setPhotos(updatedPhotos);
     };
 
@@ -44,7 +60,7 @@ const PersonalDetails = () => {
     }
   };
 
-  const handleRemovePhoto = (index) => {
+  const handleRemovePhoto = (index: number) => {
     const updatedPhotos = [...photos];
     updatedPhotos[index] = null;
     setPhotos(updatedPhotos);
